@@ -6,6 +6,7 @@ import { ConfigProvider } from "antd";
 import theme from "../theme/themeConfig";
 import { ThemeProvider } from "./context/ThemeContext";
 import ThemeWrapper from "./components/ThemeWrapper";
+import { UserProvider } from "./context/UserContext";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -35,9 +36,11 @@ export default function RootLayout({
      
         <ThemeProvider>
           <ThemeWrapper>
-            <AntdRegistry>
-              <ConfigProvider theme={theme}>{children}</ConfigProvider>
-            </AntdRegistry>
+            <UserProvider>
+              <AntdRegistry>
+                <ConfigProvider theme={theme}>{children}</ConfigProvider>
+              </AntdRegistry>
+            </UserProvider>
           </ThemeWrapper>
         </ThemeProvider>
         

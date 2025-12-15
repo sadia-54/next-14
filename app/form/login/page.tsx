@@ -2,11 +2,15 @@
 
 import React from 'react';
 import type { FormProps } from 'antd';
-import { Button, Checkbox, Form, Input } from 'antd';
+import { Button, Checkbox, Form, Input, Steps } from 'antd';
+import StepsComponent from '@/app/components/Steps';
+import { useTheme } from '@/app/context/ThemeContext';
+import { useUser } from '@/app/context/UserContext';
 
 type FieldType = {
   username?: string;
   password?: string;
+  address?: string;
   remember?: string;
 };
 
@@ -18,14 +22,41 @@ const onFinishFailed: FormProps<FieldType>['onFinishFailed'] = (errorInfo) => {
   console.log('Failed:', errorInfo);
 };
 
-const App: React.FC = () => (
+
+export default function Login () {
+  const { mode, toggleTheme } = useTheme();
+  const { setUser, setStep } = useUser()
+
+  const handleLoginFinish = (values: { username: string; password: string }) => {
+  setUser(values)
+  setStep(1)
+}
+
+const handleShippingFinish = (values: { address: string }) => {
+  setUser({ shippingAddress: values.address })
+  setStep(2)
+}
+
+
+
+  return (
+  <div className="m-10">
+
+    <Button onClick={toggleTheme} type="primary" className='mb-10'>
+        Toggle Theme
+      </Button>
+
+  <div className='flex gap-60 m-10'>
+
+    {/* Login form */}
+
   <Form
     name="basic"
     labelCol={{ span: 8 }}
     wrapperCol={{ span: 16 }}
     style={{ maxWidth: 600 }}
     initialValues={{ remember: true }}
-    onFinish={onFinish}
+    onFinish={handleLoginFinish}
     onFinishFailed={onFinishFailed}
     autoComplete="off"
   >
@@ -55,6 +86,49 @@ const App: React.FC = () => (
       </Button>
     </Form.Item>
   </Form>
-);
 
-export default App;
+  {/* shipping address form */}
+    <Form
+    name="basic"
+    labelCol={{ span: 8 }}
+    wrapperCol={{ span: 16 }}
+    style={{ maxWidth: 600 }}
+    initialValues={{ remember: true }}
+    onFinish={handleShippingFinish}
+    onFinishFailed={onFinishFailed}
+    autoComplete="off"
+  >
+    <Form.Item<FieldType>
+      label="City"
+      name="address"
+      rules={[{ required: true, message: 'Please input your city!' }]}
+    >
+      <Input />
+    </Form.Item>
+
+    <Form.Item<FieldType>
+      label="Street"
+      name="address"
+      rules={[{ required: true, message: 'Please input your street!' }]}
+    >
+      <Input />
+    </Form.Item>
+
+    <Form.Item<FieldType> name="remember" valuePropName="checked" label={null}>
+      <Checkbox>Remember me</Checkbox>
+    </Form.Item>
+
+    <Form.Item label={null}>
+      <Button type="primary" htmlType="submit">
+        Submit
+      </Button>
+    </Form.Item>
+  </Form>
+
+  </div>
+
+  <StepsComponent />
+
+  </div>
+)
+}
