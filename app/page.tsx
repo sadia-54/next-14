@@ -38,6 +38,14 @@ export default function Home() {
       <Link href="/form/login">
         <Button type='primary'>Go to login Page</Button>
       </Link>
+      
+      <Link href="/dashboard">
+        <Button type='primary'>Go to dashboard Page</Button>
+      </Link>
+
+      <Link href="/auth">
+        <Button type='primary'>Go to auth Page</Button>
+      </Link>
 
     </div>
   );
