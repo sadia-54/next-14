@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useReducer } from 'react'
 
 export type UserInfo = {
   username?: string
@@ -8,32 +8,84 @@ export type UserInfo = {
   shippingAddress?: string
 }
 
-type UserContextType = {
+/* ------------------ STATE TYPES ------------------ */
+
+type State = {
   user: UserInfo
-  setUser: (data: Partial<UserInfo>) => void
   step: number
-  setStep: (step: number) => void
 }
+
+/* ------------------ ACTION TYPES ------------------ */
+
+type Action =
+  | { type: 'SET_USER'; payload: Partial<UserInfo> }
+  | { type: 'SET_STEP'; payload: number }
+
+/* ------------------ CONTEXT TYPE ------------------ */
+
+type UserContextType = {
+  state: State
+  dispatch: React.Dispatch<Action>
+}
+
+/* ------------------ CONTEXT ------------------ */
 
 const UserContext = createContext<UserContextType | null>(null)
 
-export function UserProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUserState] = useState<UserInfo>({})
-  const [step, setStep] = useState(0) // 0 = login, 1 = shipping, 2 = pay, 3 = done
+/* ------------------ REDUCER ------------------ */
 
-  const setUser = (data: Partial<UserInfo>) => {
-    setUserState(prev => ({ ...prev, ...data }))
+function userReducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'SET_USER':
+      return {
+        ...state,
+        user: { ...state.user, ...action.payload },
+      }
+
+    case 'SET_STEP':
+      return {
+        ...state,
+        step: action.payload,
+      }
+
+    default:
+      return state
   }
+}
+
+/* ------------------ PROVIDER ------------------ */
+
+const initialState: State = {
+  user: {},
+  step: 0,
+}
+
+export function UserProvider({ children }: { children: React.ReactNode }) {
+  const [state, dispatch] = useReducer(userReducer, initialState)
 
   return (
-    <UserContext.Provider value={{ user, setUser, step, setStep }}>
+    <UserContext.Provider value={{ state, dispatch }}>
       {children}
     </UserContext.Provider>
   )
 }
 
+/* ------------------ CUSTOM HOOK ------------------ */
+
 export const useUser = () => {
   const context = useContext(UserContext)
-  if (!context) throw new Error('useUser must be used inside UserProvider')
-  return context
+  if (!context) {
+    throw new Error('useUser must be used inside UserProvider')
+  }
+
+  const { state, dispatch } = context
+
+  return {
+    user: state.user,
+    step: state.step,
+    setUser: (data: Partial<UserInfo>) =>
+      dispatch({ type: 'SET_USER', payload: data }),
+    setStep: (step: number) =>
+      dispatch({ type: 'SET_STEP', payload: step }),
+  }
 }
