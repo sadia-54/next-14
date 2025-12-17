@@ -8,6 +8,7 @@ import { ThemeProvider } from "./context/ThemeContext";
 import ThemeWrapper from "./components/ThemeWrapper";
 import { UserProvider } from "./context/UserContext";
 import { AuthProvider } from "./context/AuthContext";
+import { ReduxProvider } from "./store/Provider";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -39,9 +40,11 @@ export default function RootLayout({
           <ThemeWrapper>
             <UserProvider>
               <AuthProvider>
-                <AntdRegistry>
+                <ReduxProvider>
+                  <AntdRegistry>
                   <ConfigProvider theme={theme}>{children}</ConfigProvider>
                 </AntdRegistry>
+                </ReduxProvider>
               </AuthProvider>
             </UserProvider>
           </ThemeWrapper>

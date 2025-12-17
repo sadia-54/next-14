@@ -15,8 +15,8 @@ export default function Home() {
         Toggle Theme
       </Button>
 
-      <Link href="/form">
-        <Button type='primary'>Go to Form Page</Button>
+      <Link href="/todo">
+        <Button type='primary'>Go to TODO Page</Button>
       </Link>
 
        <Link href="/table">
