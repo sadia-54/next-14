@@ -5,7 +5,9 @@ import { createContext, useContext, useReducer } from 'react'
 export type UserInfo = {
   username?: string
   password?: string
-  shippingAddress?: string
+  City?: string
+  Street?: string
+  payment?: string
 }
 
 /* ------------------ STATE TYPES ------------------ */
