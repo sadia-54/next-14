@@ -46,6 +46,26 @@ export default function Login() {
     setStep(3)
   }
 
+  const canGoNext = () => {
+  if (step === 0) return !!user.userInfo
+  if (step === 1) return !!user.shippingAddress
+  if (step === 2) return !!user.paymentInfo
+  return false
+}
+
+const handlePrev = () => {
+  if (step > 0) {
+    setStep(step - 1)
+  }
+}
+
+const handleNext = () => {
+  if (canGoNext()) {
+    setStep(step + 1)
+  }
+}
+
+
   return (
     <div className="m-10">
       <Button onClick={toggleTheme} type="primary" className="mb-6">
@@ -58,7 +78,7 @@ export default function Login() {
 
       {/* STEP 0: LOGIN */}
       {step === 0 && (
-        <Form style={{ maxWidth: 400 }} onFinish={handleLoginFinish}>
+        <Form style={{ maxWidth: 400 }} initialValues={user.userInfo} onFinish={handleLoginFinish}>
           <Form.Item
             label="Username"
             name="username"
@@ -83,7 +103,7 @@ export default function Login() {
 
       {/* STEP 1: SHIPPING */}
       {step === 1 && (
-        <Form style={{ maxWidth: 400 }} onFinish={handleShippingFinish}>
+        <Form style={{ maxWidth: 400 }} initialValues={user.shippingAddress} onFinish={handleShippingFinish}>
           <Form.Item
             label="City"
             name="city"
@@ -107,7 +127,7 @@ export default function Login() {
 
       {/* STEP 2: PAYMENT */}
       {step === 2 && (
-        <Form style={{ maxWidth: 400 }} onFinish={handlePaymentFinish}>
+        <Form style={{ maxWidth: 400 }} initialValues={user.paymentInfo} onFinish={handlePaymentFinish}>
           <Form.Item
             label="Card Number"
             name="cardNumber"
@@ -152,6 +172,26 @@ export default function Login() {
 
 
          <br />
+
+         {step < 3 && (
+  <div className="mt-10 flex justify-between max-w-lg mx-auto">
+    <Button
+      disabled={step === 0}
+      onClick={handlePrev}
+    >
+      Previous
+    </Button>
+
+    <Button
+      type="primary"
+      disabled={!canGoNext()}
+      onClick={handleNext}
+    >
+      Next
+    </Button>
+  </div>
+)}
+
 
     </div>
   )
