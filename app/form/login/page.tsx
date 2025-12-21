@@ -20,19 +20,29 @@ export default function Login() {
 
   /* Step 1: Login */
   const handleLoginFinish = (values: { username: string; password: string }) => {
-    setUser(values)
+    setUser({
+      userInfo: {
+        username: values.username,
+        password: values.password,
+      },
+  })
     setStep(1)
   }
 
   /* Step 2: Shipping */
   const handleShippingFinish = (values: { city: string; street: string }) => {
-    setUser({ City: values.city, Street: values.street })
+    setUser({
+      shippingAddress: {
+        city: values.city,
+        street: values.street,
+      },
+   })
     setStep(2)
   }
 
   /* Step 3: Payment */
   const handlePaymentFinish = (values: { cardNumber: string }) => {
-    setUser({ payment: values.cardNumber })
+    setUser({ paymentInfo: { cardNumber: values.cardNumber } })
     setStep(3)
   }
 
@@ -41,6 +51,10 @@ export default function Login() {
       <Button onClick={toggleTheme} type="primary" className="mb-6">
         Toggle Theme
       </Button>
+
+            <StepsComponent />
+
+            <br/>
 
       {/* STEP 0: LOGIN */}
       {step === 0 && (
@@ -109,21 +123,36 @@ export default function Login() {
       )}
 
       {/* STEP 3: DONE */}
-      {step === 3 && (
-        <div className="text-center mt-10">
-          <h2 className="text-2xl font-bold">✅ Order Completed!</h2>
-          <p className="mt-2">Thank you for your purchase.</p>
-        </div>
-      )}
+    {step === 3 && (
+  <div className="mt-10 max-w-lg mx-auto rounded-lg border p-6">
+    <h2 className="text-2xl font-bold mb-4 text-center">
+      ✅ Order Completed
+    </h2>
+
+    <div className="space-y-4">
+      <div>
+        <h3 className="font-semibold">User Info</h3>
+        <p>Username: {user.userInfo?.username}</p>
+        <p>Password: {user.userInfo?.password}</p>
+      </div>
+
+      <div>
+        <h3 className="font-semibold">Shipping Address</h3>
+        <p>City: {user.shippingAddress?.city}</p>
+        <p>Street: {user.shippingAddress?.street}</p>
+      </div>
+
+      <div>
+        <h3 className="font-semibold">Payment Info</h3>
+        <p>Card Number: {user.paymentInfo?.cardNumber}</p>
+      </div>
+    </div>
+  </div>
+)}
+
 
          <br />
 
-      <StepsComponent />
-
-
-      <pre className="mt-10 bg-gray-100 p-4 rounded">
-        {JSON.stringify(user, null, 2)}
-      </pre>
     </div>
   )
 }
